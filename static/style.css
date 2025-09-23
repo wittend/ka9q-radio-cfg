@@ -1,0 +1,97 @@
+body
+{
+    font-family:        system-ui, sans-serif;
+    margin:             0;
+    display:            grid;
+    grid-template-rows: auto 1fr;
+    height:             100vh;
+}
+
+header
+{
+    padding:    12px 16px;
+    background: #1e1e1e;
+    color:      #fff;
+}
+
+main
+{
+    display:               grid;
+    grid-template-columns: 280px 1fr;
+    gap:                   12px;
+    padding:               12px;
+}
+
+aside
+{
+    border-right:  1px solid #ddd;
+    padding-right: 12px;
+}
+
+#editor
+{
+    padding: 8px;
+}
+
+.path-row
+{
+    display:       flex;
+    gap:           8px;
+    margin-bottom: 8px;
+}
+
+form .field
+{
+    display:               grid;
+    grid-template-columns: 200px 1fr;
+    gap:                   8px;
+    margin:                6px 0;
+    align-items:           center;
+}
+
+fieldset
+{
+    border:  1px solid #ccc;
+    padding: 8px;
+    margin:  6px 0;
+}
+
+legend
+{
+    font-weight: 600;
+}
+
+.actions
+{
+    display:    flex;
+    gap:        8px;
+    margin-top: 8px;
+}
+
+pre
+{
+    background: #f6f8fa;
+    padding:    8px;
+    border:     1px solid #eee;
+    max-height: 260px;
+    overflow:   auto;
+}
+
+button
+{
+    cursor: pointer;
+}
+
+.file-link
+{
+    background: none;
+    border:     none;
+    color:      #0366d6;
+    text-align: left;
+    padding:    0;
+}
+
+.file-link:hover
+{
+    text-decoration: underline;
+}
