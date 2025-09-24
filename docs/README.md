@@ -1,4 +1,4 @@
-# ka9q-cfg — Web INI/CONF Editor for Deno
+# ka9q-radio-cfg — Web .ini/.conf Editor for Deno
 
 A small Deno-based web app to browse, view, edit, and save `.ini` / `.conf` files. It preserves formatting and comments where possible, renders nested structures as an HTML form with sensible input types, and supports optional Basic Auth when accessed remotely.
 
