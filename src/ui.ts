@@ -1,9 +1,9 @@
 // src/ui.ts
 export function renderHTML(
-    params: { root: string; discovered: string[] },
+  params: { root: string; discovered: string[] },
 ): string {
-    const list = ""; // replaced by dynamic tree container
-    return `<!doctype html>
+  const list = ""; // replaced by dynamic tree container
+  return `<!doctype html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -19,8 +19,8 @@ export function renderHTML(
     <aside>
       <h2>Discovered</h2>
       <div id="tree" class="tree" data-files='${
-        JSON.stringify(params.discovered)
-    }'></div>
+    JSON.stringify(params.discovered)
+  }'></div>
       <h3>Browse</h3>
       <div class="browser">
         <input id="dir-input" placeholder="subdir (optional)">

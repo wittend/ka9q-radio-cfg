@@ -15,22 +15,23 @@ A small Deno-based web app to browse, view, edit, and save `.ini` / `.conf` file
 Requirements:
 - Deno 1.45+ (or latest stable)
 
-Run:
+To manually test, run:
 ```
-bash deno task dev
-# then open [http://localhost:8787](http://localhost:8787)
+deno run --allow-read --allow-write --allow-net ./server.ts --root=.
 ```
+Then open [http://localhost:8787](http://localhost:8787) in your browser.
 
-Optional environment:
+## Optional environment:
 - `CONFIG_ROOT`: Root directory to search and edit configs (default: current working directory)
 - `PORT`: HTTP port (default: 8787)
 - `BASIC_AUTH_USER`, `BASIC_AUTH_PASS`: Enable Basic Auth for non-localhost access
 
 Example:
 
-```aiignore
+```
 bash CONFIG_ROOT=/etc/myapp PORT=8080 BASIC_AUTH_USER=admin BASIC_AUTH_PASS=secret deno task dev
 ```
+
 ## Usage
 
 - Home page lists discovered `.ini`/`.conf` files found under `CONFIG_ROOT`.
@@ -85,7 +86,7 @@ json
     } 
 }
 ```
-n the default UI, the schema payload is null. You can wire your own schema on the client side by populating the `schema` field in the Save/Save As requests.
+In the default UI, the schema payload is null. You can wire your own schema on the client side by populating the `schema` field in the Save/Save As requests.
 
 ## Permissions
 
