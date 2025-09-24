@@ -11,18 +11,169 @@ const preserveEl = document.getElementById("preserve");
 const browseBtn = document.getElementById("browse-btn");
 const dirInput = document.getElementById("dir-input");
 const browseList = document.getElementById("browse-list");
+const treeRoot = document.getElementById("tree");
 
 let currentDoc = null;
 let currentActualPath = null;
 
-document.querySelectorAll(".file-link").forEach((btn) =>
+// Build clickable tree from discovered files
+if(treeRoot)
 {
-    btn.addEventListener("click", () =>
+    const files = JSON.parse(treeRoot.dataset.files || "[]");
+    const model = buildTreeModel(files);
+    const treeEl = renderTree(model);
+    treeRoot.appendChild(treeEl);
+}
+
+function buildTreeModel(paths)
+{
+    const root = {name: "/", type: "dir", children: {}};
+    for(const p of paths)
     {
-        pathEl.value = btn.dataset.path;
-        openBtn.click();
-    });
-});
+        const parts = p.split("/").filter(Boolean);
+        let node = root;
+        for(let i = 0; i < parts.length; i ++)
+        {
+            const part = parts[i];
+            const isLast = i === parts.length - 1;
+            if(isLast)
+            {
+                node.children[part] = {name: part, type: "file", path: p, sections: null};
+            }
+            else
+            {
+                node.children[part] ||= {name: part, type: "dir", children: {}};
+                node = node.children[part];
+            }
+        }
+    }
+    return root;
+}
+
+function renderTree(node)
+{
+    const ul = document.createElement("ul");
+    for(const child of Object.values(node.children))
+    {
+        const li = document.createElement("li");
+        const line = document.createElement("span");
+        line.className = "node";
+        
+        if(child.type === "dir")
+        {
+            const toggle = document.createElement("span");
+            toggle.textContent = "▸";
+            toggle.className = "toggle";
+            const name = document.createElement("span");
+            name.textContent = child.name;
+            name.className = "folder";
+            
+            const sub = renderTree(child);
+            sub.style.display = "none";
+            
+            const open = () =>
+            {
+                const isOpen = sub.style.display !== "none";
+                sub.style.display = isOpen ? "none" : "";
+                toggle.textContent = isOpen ? "▸" : "▾";
+            };
+            toggle.addEventListener("click", open);
+            name.addEventListener("click", open);
+            
+            line.appendChild(toggle);
+            line.appendChild(name);
+            li.appendChild(line);
+            li.appendChild(sub);
+        }
+        else if(child.type === "file")
+        {
+            const toggle = document.createElement("span");
+            toggle.textContent = "▸";
+            toggle.className = "toggle";
+            const name = document.createElement("span");
+            name.textContent = child.name;
+            name.className = "file";
+            name.addEventListener("click", async() =>
+            {
+                pathEl.value = child.path;
+                await openFile(child.path);
+                // populate sections if not loaded
+                const sections = Object.keys(currentDoc || {}).filter(k => typeof (currentDoc[k]) === "object" && !Array.isArray(currentDoc[k]));
+                child.sections = sections;
+                const sub = li.querySelector("ul") || document.createElement("ul");
+                sub.innerHTML = "";
+                for(const s of sections)
+                {
+                    const sli = document.createElement("li");
+                    const sspan = document.createElement("span");
+                    sspan.textContent = s;
+                    sspan.className = "section";
+                    sspan.addEventListener("click", () => scrollToSection(s));
+                    sli.appendChild(sspan);
+                    sub.appendChild(sli);
+                }
+                if( !li.querySelector("ul"))
+                {
+                    li.appendChild(sub);
+                }
+                sub.style.display = "";
+                toggle.textContent = "▾";
+            });
+            
+            const sub = document.createElement("ul");
+            sub.style.display = "none";
+            
+            const toggleOpen = () =>
+            {
+                const isOpen = sub.style.display !== "none";
+                if(isOpen)
+                {
+                    sub.style.display = "none";
+                    toggle.textContent = "▸";
+                }
+                else
+                {
+                    // If sections known, just toggle. Otherwise click filename to load sections.
+                    if(child.sections)
+                    {
+                        sub.style.display = "";
+                        toggle.textContent = "▾";
+                    }
+                    else
+                    {
+                        name.click();
+                    }
+                }
+            };
+            toggle.addEventListener("click", toggleOpen);
+            
+            line.appendChild(toggle);
+            line.appendChild(name);
+            li.appendChild(line);
+            li.appendChild(sub);
+        }
+        ul.appendChild(li);
+    }
+    return ul;
+}
+
+function scrollToSection(sectionName)
+{
+    // Find fieldset legend matching section
+    const legends = formEl.querySelectorAll("legend");
+    for(const lg of legends)
+    {
+        if(lg.textContent === sectionName)
+        {
+            lg.scrollIntoView({behavior: "smooth", block: "start"});
+            lg.style.background = "rgba(255, 230, 150, 0.7)";
+            setTimeout(() => (lg.style.background = ""), 800);
+            break;
+        }
+    }
+}
+
+// Existing click handlers for inline "Discovered" list are removed since tree replaces it
 
 browseBtn.addEventListener("click", async() =>
 {
@@ -72,6 +223,11 @@ openBtn.addEventListener("click", async() =>
     {
         return alert("Enter a relative path");
     }
+    await openFile(p);
+});
+
+async function openFile(p)
+{
     const res = await fetch(`/api/file?path=${encodeURIComponent(p)}`);
     if( !res.ok)
     {
@@ -85,7 +241,7 @@ openBtn.addEventListener("click", async() =>
     rawEl.textContent = data.raw || "";
     formEl.innerHTML = "";
     buildForm(formEl, currentDoc, "");
-});
+}
 
 saveBtn.addEventListener("click", async() =>
 {
@@ -314,7 +470,6 @@ function castValue(type, raw, key)
     }
     if(type === "datetime-local")
     {
-        // Keep as string; server can interpret if needed
         return raw;
     }
     if(/^(true|false)$/i.test(String(raw)))

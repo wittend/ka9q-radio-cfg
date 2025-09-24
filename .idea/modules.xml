@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ka9q-cfg.iml" filepath="$PROJECT_DIR$/.idea/ka9q-cfg.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ka9q-radio-cfg.iml" filepath="$PROJECT_DIR$/.idea/ka9q-radio-cfg.iml" />
     </modules>
   </component>
 </project>

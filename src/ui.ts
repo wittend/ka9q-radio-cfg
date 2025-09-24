@@ -1,7 +1,9 @@
 // src/ui.ts
-export function renderHTML(params: { root: string; discovered: string[] }): string {
-  const list = params.discovered.map((p) => `<li><button class="file-link" data-path="${p}">${p}</button></li>`).join("");
-  return `<!doctype html>
+export function renderHTML(
+    params: { root: string; discovered: string[] },
+): string {
+    const list = ""; // replaced by dynamic tree container
+    return `<!doctype html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -16,7 +18,9 @@ export function renderHTML(params: { root: string; discovered: string[] }): stri
   <main>
     <aside>
       <h2>Discovered</h2>
-      <ul>${list}</ul>
+      <div id="tree" class="tree" data-files='${
+        JSON.stringify(params.discovered)
+    }'></div>
       <h3>Browse</h3>
       <div class="browser">
         <input id="dir-input" placeholder="subdir (optional)">
