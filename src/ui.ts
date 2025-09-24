@@ -9,6 +9,53 @@ export function renderHTML(
   <meta charset="utf-8">
   <title>Config Editor</title>
   <link rel="stylesheet" href="/style.css">
+  <style>
+    /* Make the layout fill the viewport to constrain scrolling */
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+    main {
+      flex: 1 1 auto;
+      display: flex;
+      min-height: 0; /* allow children to shrink and scroll */
+    }
+    aside {
+      width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0 1rem;
+      border-right: 1px solid #ddd;
+      min-height: 0; /* important for nested overflow containers */
+    }
+    /* Independently scrollable tree area that never exceeds page height */
+    .tree {
+      overflow: auto;
+      flex: 1 1 auto;  /* take remaining height in aside */
+      min-height: 0;   /* allow flex child to shrink */
+      border: 1px solid #e3e3e3;
+      border-radius: 4px;
+      padding: 0.5rem;
+      background: #fafafa;
+    }
+    /* Keep "Browse" section visible below the tree */
+    .browser {
+      flex: 0 0 auto;
+    }
+    /* Make editor area scroll independently as well (optional) */
+    #editor {
+      flex: 1 1 auto;
+      min-width: 0;
+      padding: 1rem;
+      overflow: auto;
+    }
+  </style>
 </head>
 <body>
   <header>
